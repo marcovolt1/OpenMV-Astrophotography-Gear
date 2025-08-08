@@ -83,7 +83,11 @@ def find_stars(img, hist = None, stats = None, thresh = 0, max_dia = 100, region
             stars = [None] * blobs_cnt
             break
         except MemoryError:
-            blobs_cnt - 10
+            # decrement the blob count so we allocate a smaller list next
+            # iteration. previously this line used subtraction without
+            # assignment which left ``blobs_cnt`` unchanged and resulted in
+            # an infinite loop if allocation continued to fail.
+            blobs_cnt -= 10
             print("memerr allocating new list")
     #too_long = 0
     #too_big  = 0
